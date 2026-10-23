@@ -9,17 +9,24 @@ from .serializers import LaunchListSerializer, LaunchDetailSerializer
 
 
 def dashboard(request):
-    total_launches = Launch.objects.count()
-    upcoming_count = Launch.objects.filter(net__gt=timezone.now()).count()
-    past_count = Launch.objects.filter(net__lte=timezone.now()).count()
-    provider_count = LaunchServiceProvider.objects.count()
+    try:
+        total_launches = Launch.objects.count()
+        upcoming_count = Launch.objects.filter(net__gt=timezone.now()).count()
+        past_count = Launch.objects.filter(net__lte=timezone.now()).count()
+        provider_count = LaunchServiceProvider.objects.count()
+        last_sync = DataSyncRun.objects.filter(status='success').first()
+        recent_launches = Launch.objects.select_related(
+            'status', 'launch_service_provider', 'pad__location'
+        ).order_by('-net')[:5]
+    except Exception:
+        total_launches = 0
+        upcoming_count = 0
+        past_count = 0
+        provider_count = 0
+        last_sync = None
+        recent_launches = []
 
-    last_sync = DataSyncRun.objects.filter(status='success').first()
     total_benchmarks = 0
-
-    recent_launches = Launch.objects.select_related(
-        'status', 'launch_service_provider', 'pad__location'
-    ).order_by('-net')[:5]
 
     context = {
         'total_launches': total_launches,

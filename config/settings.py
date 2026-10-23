@@ -10,6 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key-change-in-production')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
+# Force DEBUG False on Render
+if os.getenv('RENDER'):
+    DEBUG = False
+
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 if os.getenv('RENDER'):
     ALLOWED_HOSTS.append(os.getenv('RENDER_EXTERNAL_HOSTNAME', ''))
@@ -30,7 +34,7 @@ INSTALLED_APPS = [
     'performance',
 ]
 
-if DEBUG:
+if DEBUG and not os.getenv('RENDER'):
     INSTALLED_APPS.append('debug_toolbar')
 
 MIDDLEWARE = [
@@ -44,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG:
+if DEBUG and not os.getenv('RENDER'):
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'config.urls'

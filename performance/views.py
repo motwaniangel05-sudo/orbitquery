@@ -70,15 +70,18 @@ def run_index_benchmark(request):
 
 
 def benchmark_history(request):
-    benchmarks = BenchmarkRun.objects.all().order_by('-created_at')
+    try:
+        benchmarks = BenchmarkRun.objects.all().order_by('-created_at')
+    except Exception:
+        benchmarks = []
 
     benchmark_type = request.GET.get('type', '')
     strategy = request.GET.get('strategy', '')
 
-    if benchmark_type:
+    if benchmarks and benchmark_type:
         benchmarks = benchmarks.filter(benchmark_type=benchmark_type)
 
-    if strategy:
+    if benchmarks and strategy:
         benchmarks = benchmarks.filter(strategy=strategy)
 
     context = {

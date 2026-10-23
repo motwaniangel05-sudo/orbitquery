@@ -2,7 +2,7 @@ services:
   - type: web
     name: orbitquery
     env: python
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    buildCommand: pip install -r requirements.txt && python manage.py migrate --noinput && python manage.py collectstatic --noinput
     startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: DEBUG
@@ -34,8 +34,6 @@ services:
       - key: LL2_API_URL
         value: https://lldev.thespacedevs.com/2.2.0
     plan: free
-    # Run migrations before starting
-    preDeployCommand: python manage.py migrate --noinput
 
 databases:
   - name: orbitquery-db

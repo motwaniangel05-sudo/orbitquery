@@ -1,0 +1,18 @@
+<div class="card mb-3">
+    <div class="card-header">
+        <h5 class="mb-0">Index Benchmark Result</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <p><strong>Records:</strong> {{ benchmark.record_limit }}</p>
+            </div>
+            <div class="col-md-4">
+                <p><strong>Median Time:</strong> {{ benchmark.median_execution_time_ms|floatformat:2 }} ms</p>
+            </div>
+            <div class="col-md-4">
+                <p><strong>Index:</strong> {{ benchmark.index_name|default:"None" }}</p>
+            </div>
+        </div>
+    </div>
+</div>

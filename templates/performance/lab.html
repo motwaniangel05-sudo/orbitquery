@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Performance Lab - OrbitQuery{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-3">N+1 Query Performance Lab</h1>
+        <p class="text-muted">Compare baseline (N+1) queries against optimised queries using select_related and prefetch_related.</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Run Benchmark</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/performance/lab/run/" id="benchmark-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="limit" class="form-label">Record Limit</label>
+                        <select class="form-select" id="limit" name="limit">
+                            <option value="10">10 records</option>
+                            <option value="50" selected>50 records</option>
+                            <option value="100">100 records</option>
+                            <option value="200">200 records</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="strategy" class="form-label">Strategy</label>
+                        <select class="form-select" id="strategy" name="strategy">
+                            <option value="baseline">Baseline (N+1)</option>
+                            <option value="optimised">Optimised (select_related/prefetch_related)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Run Benchmark</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Explanation</h5>
+            </div>
+            <div class="card-body">
+                <h6>Baseline (N+1)</h6>
+                <p class="small text-muted">Fetches launches and accesses related objects (status, provider, location, mission) without preloading. This causes one additional query per launch.</p>
+                <h6>Optimised</h6>
+                <p class="small text-muted">Uses select_related() for foreign keys and prefetch_related() for many-to-many relationships to load all related data in fewer queries.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Benchmark Results</h5>
+            </div>
+            <div class="card-body" id="benchmark-results">
+                {% if recent_benchmarks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Strategy</th>
+                                    <th>Records</th>
+                                    <th>Queries</th>
+                                    <th>Median Time (ms)</th>
+                                    <th>Improvement</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for benchmark in recent_benchmarks %}
+                                    <tr>
+                                        <td>{{ benchmark.created_at|date:"Y-m-d H:i:s" }}</td>
+                                        <td><span class="badge bg-{{ 'success' if benchmark.strategy == 'optimised' else 'secondary' }}">{{ benchmark.strategy|title }}</span></td>
+                                        <td>{{ benchmark.record_limit }}</td>
+                                        <td>{{ benchmark.query_count }}</td>
+                                        <td>{{ benchmark.median_execution_time_ms|floatformat:2 }}</td>
+                                        <td>
+                                            {% if benchmark.improvement_percentage %}
+                                                <span class="{% if benchmark.improvement_percentage > 0 %}text-success{% else %}text-danger{% endif %}">
+                                                    {{ benchmark.improvement_percentage|floatformat:1 }}%
+                                                </span>
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No benchmarks run yet. Run a benchmark to see results.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent SQL Queries</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_benchmarks %}
+                    {% for benchmark in recent_benchmarks|slice:":1" %}
+                        {% if benchmark.sql_queries %}
+                            <pre><code>{{ benchmark.sql_queries|join:"\n\n" }}</code></pre>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Run a benchmark to see SQL queries.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

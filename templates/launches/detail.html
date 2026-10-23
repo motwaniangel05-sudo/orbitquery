@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ launch.name }} - OrbitQuery{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Overview</a></li>
+                <li class="breadcrumb-item"><a href="/launches/">Launches</a></li>
+                <li class="breadcrumb-item active">{{ launch.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="h3 mb-3">{{ launch.name }}</h1>
+        {% if launch.image %}
+            <img src="{{ launch.image }}" alt="{{ launch.name }}" class="img-fluid mb-3 rounded" style="max-height: 400px; width: 100%; object-fit: cover;">
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Status</h5>
+            </div>
+            <div class="card-body">
+                <span class="badge bg-{{ 'success' if launch.status.name == 'Launch Successful' else 'secondary' }} fs-6">
+                    {{ launch.status.name }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Launch Details</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Net</th>
+                        <td>{{ launch.net|date:"Y-m-d H:i:s T" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Window Start</th>
+                        <td>{{ launch.window_start|date:"Y-m-d H:i:s T" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Window End</th>
+                        <td>{{ launch.window_end|date:"Y-m-d H:i:s T" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Probability</th>
+                        <td>{{ launch.probability|default:"-" }}%</td>
+                    </tr>
+                    {% if launch.weather_concerns %}
+                    <tr>
+                        <th>Weather Concerns</th>
+                        <td>{{ launch.weather_concerns }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if launch.holdreason %}
+                    <tr>
+                        <th>Hold Reason</th>
+                        <td>{{ launch.holdreason }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if launch.failreason %}
+                    <tr>
+                        <th>Failure Reason</th>
+                        <td>{{ launch.failreason }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Rocket</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ launch.rocket_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Family</th>
+                        <td>{{ launch.rocket_family }}</td>
+                    </tr>
+                    <tr>
+                        <th>Configuration</th>
+                        <td>{{ launch.rocket_configuration }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Launch Provider</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ launch.launch_service_provider.name }}</strong></p>
+                <p><strong>Type:</strong> {{ launch.launch_service_provider.type }}</p>
+                {% if launch.launch_service_provider.url %}
+                    <p><a href="{{ launch.launch_service_provider.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View Agency</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Launch Location</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ launch.pad.location.name }}</strong></p>
+                <p><strong>Pad:</strong> {{ launch.pad.name }}</p>
+                <p><strong>Country:</strong> {{ launch.pad.location.country_code }}</p>
+                {% if launch.pad.map_url %}
+                    <p><a href="{{ launch.pad.map_url }}" target="_blank" class="btn btn-sm btn-outline-primary">View on Map</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if launch.mission %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Mission</h5>
+            </div>
+            <div class="card-body">
+                <h4>{{ launch.mission.name }}</h4>
+                <p>{{ launch.mission.description }}</p>
+                <p><strong>Type:</strong> {{ launch.mission.type }}</p>
+                {% if launch.mission.orbit_name %}
+                    <p><strong>Orbit:</strong> {{ launch.mission.orbit_name }} ({{ launch.mission.orbit_abbrev }})</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <p><strong>Orbital Attempts:</strong> {{ launch.orbital_launch_attempt_count }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>Location Attempts:</strong> {{ launch.location_launch_attempt_count }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>Pad Attempts:</strong> {{ launch.pad_launch_attempt_count }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>Agency Attempts:</strong> {{ launch.agency_launch_attempt_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <a href="/launches/" class="btn btn-outline-secondary">Back to Launch Explorer</a>
+    </div>
+</div>
+{% endblock %}

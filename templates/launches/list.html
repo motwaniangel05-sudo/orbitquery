@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Launch Explorer - OrbitQuery{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-3">Launch Explorer</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Filters</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="q" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="q" name="q" value="{{ query }}" placeholder="Launch name or rocket">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">All</option>
+                            {% for status in status_choices %}
+                                <option value="{{ status.id }}" {% if status_id|stringformat:"s" == status.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ status.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="provider" class="form-label">Provider</label>
+                        <select class="form-select" id="provider" name="provider">
+                            <option value="">All</option>
+                            {% for provider in provider_choices %}
+                                <option value="{{ provider.id }}" {% if provider_id|stringformat:"s" == provider.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ provider.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="location" class="form-label">Location</label>
+                        <select class="form-select" id="location" name="location">
+                            <option value="">All</option>
+                            {% for location in location_choices %}
+                                <option value="{{ location.id }}" {% if location_id|stringformat:"s" == location.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ location.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="date_from" class="form-label">From</label>
+                        <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from }}">
+                    </div>
+                    <div class="col-md-1">
+                        <label for="date_to" class="form-label">To</label>
+                        <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to }}">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Launches ({{ launches|length }})</h5>
+            </div>
+            <div class="card-body">
+                {% if launches %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th><a href="?sort=name&q={{ query }}&status={{ status_id }}&provider={{ provider_id }}&location={{ location_id }}">Name</a></th>
+                                    <th>Status</th>
+                                    <th><a href="?sort=net&q={{ query }}&status={{ status_id }}&provider={{ provider_id }}&location={{ location_id }}">Net</a></th>
+                                    <th>Provider</th>
+                                    <th>Location</th>
+                                    <th>Mission</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for launch in launches %}
+                                    <tr>
+                                        <td><a href="/launches/{{ launch.slug }}/">{{ launch.name }}</a></td>
+                                        <td><span class="badge bg-secondary">{{ launch.status.abbrev }}</span></td>
+                                        <td>{{ launch.net|date:"Y-m-d H:i" }}</td>
+                                        <td>{{ launch.launch_service_provider.name }}</td>
+                                        <td>{{ launch.pad.location.name }}</td>
+                                        <td>{{ launch.mission.name|default:"-" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <p class="text-muted">No launches found matching your criteria.</p>
+                        <a href="/launches/" class="btn btn-outline-secondary">Clear Filters</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

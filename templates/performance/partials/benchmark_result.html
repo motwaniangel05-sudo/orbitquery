@@ -1,0 +1,30 @@
+<div class="card mb-3">
+    <div class="card-header">
+        <h5 class="mb-0">Benchmark Result - {{ benchmark.strategy|title }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <p><strong>Records:</strong> {{ benchmark.record_limit }}</p>
+            </div>
+            <div class="col-md-3">
+                <p><strong>Queries:</strong> {{ benchmark.query_count }}</p>
+            </div>
+            <div class="col-md-3">
+                <p><strong>Median Time:</strong> {{ benchmark.median_execution_time_ms|floatformat:2 }} ms</p>
+            </div>
+            <div class="col-md-3">
+                <p><strong>DB Time:</strong> {{ benchmark.db_query_time_ms|floatformat:2 }} ms</p>
+            </div>
+        </div>
+        {% if benchmark.improvement_percentage %}
+            <div class="row">
+                <div class="col-12">
+                    <p class="{% if benchmark.improvement_percentage > 0 %}text-success{% else %}text-danger{% endif %}">
+                        <strong>Improvement:</strong> {{ benchmark.improvement_percentage|floatformat:1 }}%
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

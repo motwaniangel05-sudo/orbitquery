@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Overview - OrbitQuery{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-3">Dashboard Overview</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="metric-value">{{ total_launches }}</div>
+                <div class="metric-label">Total Launches</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="metric-value">{{ upcoming_count }}</div>
+                <div class="metric-label">Upcoming Launches</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="metric-value">{{ past_count }}</div>
+                <div class="metric-label">Past Launches</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="metric-value">{{ provider_count }}</div>
+                <div class="metric-label">Launch Providers</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Last Synchronisation</h5>
+            </div>
+            <div class="card-body">
+                {% if last_sync %}
+                    <p><strong>Status:</strong> {{ last_sync.status|title }}</p>
+                    <p><strong>Time:</strong> {{ last_sync.started_at|date:"Y-m-d H:i:s" }}</p>
+                    <p><strong>Records:</strong> {{ last_sync.records_fetched }} fetched, {{ last_sync.records_created }} created</p>
+                {% else %}
+                    <p class="text-muted">No synchronisation runs yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Benchmark Summary</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Total Benchmarks:</strong> {{ total_benchmarks }}</p>
+                <p><a href="/performance/history/" class="btn btn-primary btn-sm">View History</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Launches</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_launches %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>Net</th>
+                                    <th>Provider</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for launch in recent_launches %}
+                                    <tr>
+                                        <td><a href="/launches/{{ launch.slug }}/">{{ launch.name }}</a></td>
+                                        <td><span class="badge bg-secondary">{{ launch.status.abbrev }}</span></td>
+                                        <td>{{ launch.net|date:"Y-m-d H:i" }}</td>
+                                        <td>{{ launch.launch_service_provider.name }}</td>
+                                        <td>{{ launch.pad.location.name }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No launches imported yet. Run <code>python manage.py sync_launches</code> to import data.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

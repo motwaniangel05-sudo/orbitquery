@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}OrbitQuery{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #1f6feb;
+            --success: #238636;
+            --warning: #d29922;
+            --danger: #f85149;
+            --border: #30363d;
+        }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .navbar {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+        .navbar-brand {
+            color: var(--accent) !important;
+            font-weight: 600;
+        }
+        .nav-link {
+            color: var(--text-secondary) !important;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-primary) !important;
+        }
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+        .card-header {
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        .table {
+            color: var(--text-primary);
+        }
+        .table thead th {
+            background-color: var(--bg-tertiary);
+            border-color: var(--border);
+        }
+        .table tbody tr {
+            border-color: var(--border);
+        }
+        .table tbody tr:hover {
+            background-color: var(--bg-tertiary);
+        }
+        .btn-primary {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+        .form-control, .form-select {
+            background-color: var(--bg-tertiary);
+            border-color: var(--border);
+            color: var(--text-primary);
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: var(--bg-tertiary);
+            border-color: var(--accent);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+        .badge {
+            font-weight: 500;
+        }
+        pre {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            color: var(--text-primary);
+        }
+        code {
+            color: var(--accent);
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        .improvement-positive {
+            color: var(--success);
+        }
+        .improvement-negative {
+            color: var(--danger);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">OrbitQuery</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/launches/">Launch Explorer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/performance/lab/">Performance Lab</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/performance/index-lab/">Index Lab</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/performance/history/">Benchmark History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api/docs/">API Docs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

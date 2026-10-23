@@ -34,6 +34,8 @@ services:
       - key: LL2_API_URL
         value: https://lldev.thespacedevs.com/2.2.0
     plan: free
+    # Run migrations before starting
+    preDeployCommand: python manage.py migrate --noinput
 
 databases:
   - name: orbitquery-db

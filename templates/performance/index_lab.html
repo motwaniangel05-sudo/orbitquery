@@ -10,101 +10,11 @@
     </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Run Index Benchmark</h5>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="/performance/index-lab/run/">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="limit" class="form-label">Record Limit</label>
-                        <select class="form-select" id="limit" name="limit">
-                            <option value="50">50 records</option>
-                            <option value="100" selected>100 records</option>
-                            <option value="500">500 records</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="index_name" class="form-label">Index Name (if applicable)</label>
-                        <input type="text" class="form-control" id="index_name" name="index_name" placeholder="e.g., launches_launch_net_idx">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Run Benchmark</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Explanation</h5>
-            </div>
-            <div class="card-body">
-                <h6>How It Works</h6>
-                <p class="small text-muted">This lab measures query performance before and after adding indexes. Run a baseline benchmark first, then create an index using Django migrations, and run again to compare.</p>
-                <h6>Index Migration</h6>
-                <p class="small text-muted">Create a migration with <code>Meta.indexes</code> or <code>Index()</code> on the Launch model to add an index on frequently queried fields like <code>net</code> or <code>status</code>.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Index Benchmark Results</h5>
-            </div>
-            <div class="card-body">
-                {% if recent_benchmarks %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Records</th>
-                                    <th>Median Time (ms)</th>
-                                    <th>Index Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for benchmark in recent_benchmarks %}
-                                    <tr>
-                                        <td>{{ benchmark.created_at|date:"Y-m-d H:i:s" }}</td>
-                                        <td>{{ benchmark.record_limit }}</td>
-                                        <td>{{ benchmark.median_execution_time_ms|floatformat:2 }}</td>
-                                        <td>{{ benchmark.index_name|default:"-" }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <p class="text-muted">No index benchmarks run yet.</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Query Plan (EXPLAIN ANALYZE)</h5>
-            </div>
             <div class="card-body">
-                {% if recent_benchmarks %}
-                    {% for benchmark in recent_benchmarks|slice:":1" %}
-                        {% if benchmark.query_plan %}
-                            <pre><code>{{ benchmark.query_plan }}</code></pre>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <p class="text-muted">Run a benchmark to see the query plan.</p>
-                {% endif %}
+                <p class="text-muted">Index experiments require local database access. Run locally to test index performance.</p>
             </div>
         </div>
     </div>

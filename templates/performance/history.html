@@ -9,89 +9,15 @@
     </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Filters</h5>
-            </div>
-            <div class="card-body">
-                <form method="GET" class="row g-3">
-                    <div class="col-md-4">
-                        <label for="type" class="form-label">Benchmark Type</label>
-                        <select class="form-select" id="type" name="type">
-                            <option value="">All</option>
-                            <option value="n_plus_one" {% if benchmark_type == 'n_plus_one' %}selected{% endif %}>N+1 Query</option>
-                            <option value="index" {% if benchmark_type == 'index' %}selected{% endif %}>Index Performance</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="strategy" class="form-label">Strategy</label>
-                        <select class="form-select" id="strategy" name="strategy">
-                            <option value="">All</option>
-                            <option value="baseline" {% if strategy == 'baseline' %}selected{% endif %}>Baseline</option>
-                            <option value="optimised" {% if strategy == 'optimised' %}selected{% endif %}>Optimised</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">All Benchmarks ({{ benchmarks|length }})</h5>
+                <h5 class="mb-0">All Benchmarks</h5>
             </div>
             <div class="card-body">
-                {% if benchmarks %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Type</th>
-                                    <th>Strategy</th>
-                                    <th>Records</th>
-                                    <th>Queries</th>
-                                    <th>Median Time (ms)</th>
-                                    <th>Improvement</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for benchmark in benchmarks %}
-                                    <tr>
-                                        <td>{{ benchmark.created_at|date:"Y-m-d H:i:s" }}</td>
-                                        <td>{{ benchmark.get_benchmark_type_display }}</td>
-                                        <td><span class="badge bg-{{ 'success' if benchmark.strategy == 'optimised' else 'secondary' }}">{{ benchmark.get_strategy_display }}</span></td>
-                                        <td>{{ benchmark.record_limit }}</td>
-                                        <td>{{ benchmark.query_count }}</td>
-                                        <td>{{ benchmark.median_execution_time_ms|floatformat:2 }}</td>
-                                        <td>
-                                            {% if benchmark.improvement_percentage %}
-                                                <span class="{% if benchmark.improvement_percentage > 0 %}text-success{% else %}text-danger{% endif %}">
-                                                    {{ benchmark.improvement_percentage|floatformat:1 }}%
-                                                </span>
-                                            {% else %}
-                                                -
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="text-center py-5">
-                        <p class="text-muted">No benchmarks found.</p>
-                        <a href="/performance/lab/" class="btn btn-outline-primary">Run a Benchmark</a>
-                    </div>
-                {% endif %}
+                <p class="text-muted">No benchmarks found. Run benchmarks locally to see history here.</p>
+                <a href="/performance/lab/" class="btn btn-outline-primary">Run a Benchmark</a>
             </div>
         </div>
     </div>

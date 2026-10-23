@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: orbitquery
+    env: python
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DB_HOST
+        fromDatabase:
+          name: orbitquery-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: orbitquery-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: orbitquery-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: orbitquery-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: orbitquery-db
+          property: password
+      - key: ALLOWED_HOSTS
+        value: orbitquery.onrender.com
+      - key: LL2_API_URL
+        value: https://lldev.thespacedevs.com/2.2.0
+    plan: free
+
+databases:
+  - name: orbitquery-db
+    databaseName: orbitquery
+    user: orbitquery
+    plan: free
